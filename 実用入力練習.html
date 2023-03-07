@@ -40,7 +40,6 @@
   </style>
 </head>
 <body>
-<!-- partial:index.partial.html -->
 <div id="mainframe">
   <a id="sentencearea"></a><br>
   <a id="nextsentence"></a><br>
@@ -552,10 +551,9 @@
 チャンスの扉は自分で開けろ</textarea><br>
   <input type="number" value="60" onchange="seconds=Number(this.value)">
   <label>秒</label>
-  <input id="longwordmode" type="checkbox"><label>長文モード</label><br>
+  <input id="longwordmode" type="checkbox" onclick="allwords=wordsarea.value.split(RegExp(`\\n{${1+this.checked},}`)).filter(e=>Boolean(e))"><label>長文モード</label><br>
   <button onclick="reset()">リセット</button>
 </div>
-<!-- partial -->
   <script>
         const sentencearea = document.querySelector("#sentencearea");
     const nextsentence = document.querySelector("#nextsentence")
@@ -595,11 +593,11 @@
       typearea.style["background-color"] = "rgb(0, 0, 0)"
     }
     window.onload = ()=>{
-      allwords=wordsarea.value.split("\n"+"\n".repeat(longwordmode.checked)).filter(e=>Boolean(e))
+      allwords=wordsarea.value.split(RegExp(`\\n{${1+longwordmode.checked},}`)).filter(e=>Boolean(e))
       changeword();
     }
     wordsarea.addEventListener("input", (e)=>{
-      allwords=wordsarea.value.split("\n"+"\n".repeat(longwordmode.checked)).filter(e=>Boolean(e))
+      allwords=wordsarea.value.split(RegExp(`\\n{${1+longwordmode.checked},}`)).filter(e=>Boolean(e))
       changeword();
     })
 
@@ -610,8 +608,8 @@
         timer = setTimeout(()=>{if(typearea.value){try{typedchars += wordtotype.match(new RegExp("(\\"+typearea.value.split("").join(")?(\\")+")?", "g")).join("").length
         }catch{}};alert(typedchars+"文字");console.log(typedchars);document.title = `${typedchars}文字 - 実用入力練習`;reset();}, 1000*seconds)
       }
-      if((e.inputType === "insertLineBreak" || (e.inputType === "insertText" && !e.data)) && typearea.value.trim() === wordtotype){
-        typedchars += typearea.value.length
+      if((e.inputType === "insertLineBreak" || (e.inputType === "insertText" && !e.data)) && typearea.value.replace(RegExp(`(?<=${wordtotype})(\n)`), "") === wordtotype){
+        typedchars += typearea.value.replace(RegExp(`(?<=${wordtotype})(\n)`), "").length
         changeword()
       }
       else if(wordtotype.startsWith(typearea.value) && typearea.value){
@@ -631,12 +629,6 @@
         }catch(e){}
       }
     })
-
-    /*typearea.addEventListener("keyup", (e)=>{
-      if(typearea.value === "\n" && e.key==="Enter"){
-        typearea.value = "";
-      }
-    })*/
   </script>
 
 </body>
