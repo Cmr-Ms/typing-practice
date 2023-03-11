@@ -627,7 +627,7 @@
         )
         countdowntimer = setInterval(
           ()=>{
-            countdown.innerText = `残り ${(endtime - Date.now()) / 1000} 秒`
+            countdown.innerText = `残り ${Math.floor((endtime - Date.now()) / 1000)} 秒`
           }, 100
         )
 
