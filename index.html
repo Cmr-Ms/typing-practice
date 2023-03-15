@@ -618,7 +618,7 @@
 
     typearea.addEventListener("input", (e)=>{
       //console.log(e.inputType, e.data)
-      if(!started && /./.test(typearea.value)){
+      if(!started && typearea.value){
         started = true
         starttime = Date.now()
         endtime = starttime + 1000*seconds
@@ -630,7 +630,7 @@
               }catch{}
             }
             clearInterval(countdowntimer)
-            alert(`${typedchars} 文字, ${typedwords} 行, バックスペース ${backspacecount} 回\nスコア: ${typedchars - backspacecount}`);console.log(typedchars);document.title = `${typedchars - backspacecount} 点 - 実用入力練習`
+            alert(`${typedchars} 文字, ${typedwords} 行, バックスペース ${backspacecount} 回\nスコア: ${typedchars - backspacecount}`);console.log(`${typedchars} 文字, ${typedwords} 行, バックスペース ${backspacecount} 回\nスコア: ${typedchars - backspacecount}`);document.title = `${typedchars - backspacecount} 点 - 実用入力練習`
             reset()
           }, endtime - starttime
         )
