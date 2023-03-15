@@ -45,7 +45,7 @@
   <a id="sentencearea"></a><br>
   <a id="nextsentence"></a><br>
   <textarea id="typearea" rows=5 cols="50" autofocus placeholder="ここに上の文を入力して開始"></textarea><br>
-  <a id="status"></a><br>
+  <a id="progress"></a><br>
   <a id="countdown"></a><br>
   <textarea id="wordsarea" rows="5" cols=50 placeholder="ここにワードを改行区切りで入力">うまい果実ほど木の一番上にある
 走らなければ競争に勝てない
@@ -561,7 +561,7 @@
         const sentencearea = document.querySelector("#sentencearea");
     const nextsentence = document.querySelector("#nextsentence")
     const typearea = document.querySelector("#typearea");
-    const status = document.querySelector("#status");
+    const progress = document.querySelector("#progress");
     const wordsarea = document.querySelector("#wordsarea");
     const longwordmode = document.querySelector("#longwordmode")
     const countdown = document.querySelector("#countdown")
@@ -572,9 +572,13 @@
       nextword = ""
       typearea.value=""
       typedchars = 0;
+      typedwords = 0;
       started = false
       starttime = 0
+      wordstarttime = 0
+      wordtypingstarted = false
       endtime = 0
+      backspacecount = 0
       seconds = Number(timerseconds.value)
       countdown.innerText = `残り ${seconds} 秒`
       changeword()
@@ -582,8 +586,13 @@
       clearInterval(countdowntimer)
     }
 
+    function changeprogress(){
+      progress.innerText = `${typedchars} 文字, ${typedwords}行, バックスペース ${backspacecount} 回`
+    }
     function changeword(){
-      status.innerText = typedchars + " 文字";
+      changeprogress()
+      wordtypingstarted = false
+      wordstarttime = 0
       multilineword.push(...allwords[Math.floor(allwords.length * Math.random())].split("\n"))
       wordtotype = multilineword[0]
       if(!multilineword[1]){
@@ -621,10 +630,11 @@
               }catch{}
             }
             clearInterval(countdowntimer)
-            alert(typedchars+"文字");console.log(typedchars);document.title = `${typedchars}文字 - 実用入力練習`
+            alert(`${typedchars} 文字, ${typedwords} 行, バックスペース ${backspacecount} 回\nスコア: ${typedchars - backspacecount}`);console.log(typedchars);document.title = `${typedchars - backspacecount} 点 - 実用入力練習`
             reset()
           }, endtime - starttime
         )
+
         countdowntimer = setInterval(
           ()=>{
             countdown.innerText = `残り ${Math.floor((endtime - Date.now()) / 1000)} 秒`
@@ -634,14 +644,19 @@
       }
       if((e.inputType === "insertLineBreak" || (e.inputType === "insertText" && (!e.data || e.data ===  "\n"))) && typearea.value.replace(RegExp(`(?<=${wordtotype})(\n)`), "") === wordtotype){
         typedchars += typearea.value.length
+        typedwords++
         changeword()
-      }
-      else if(wordtotype.startsWith(typearea.value) && typearea.value){
+      }if(wordtotype.startsWith(typearea.value) && typearea.value){
         typearea.style["background-color"] = "rgb(0, 100, 0)"
+
       }else if(!wordtotype.startsWith(typearea.value) && typearea.value){
         typearea.style["background-color"] = "rgb(100, 0, 0)"
+
       }else{
         typearea.style["background-color"] = "rgb(0, 0, 0)"
+      }if(started && !wordtypingstarted){
+        wordtypingstarted = true
+        wordstarttime = Date.now()
       }
     })
 
@@ -651,14 +666,11 @@
         try{
           clearTimeout(timer)
         }catch(e){}
+      }else if (e.code === "Backspace"){
+        backspacecount++
+        changeprogress()
       }
     })
-
-    /*typearea.addEventListener("keyup", (e)=>{
-      if(typearea.value === "\n" && e.key==="Enter"){
-        typearea.value = "";
-      }
-    })*/
   </script>
 
 </body>
