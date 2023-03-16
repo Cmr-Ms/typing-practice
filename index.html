@@ -565,7 +565,7 @@
     const countdown = document.querySelector("#countdown")
     const timerseconds = document.querySelector("#seconds")
     escapecount = 0
-    try{cookieconvertedtojson = JSON.parse(document.cookie);wastingtime = cookieconvertedtojson["wastingtime"];highscore = cookieconvertedtojson["highscore"]}catch(e){cookieconvertedtojson = {highscore: 0, wastingtime: 0}}
+    try{cookieconvertedtojson = JSON.parse(document.cookie);wastingtime = cookieconvertedtojson["wastingtime"];highscore = cookieconvertedtojson["highscore"]}catch(e){cookieconvertedtojson = {highscore: 0, wastingtime: 0};wastingtime = cookieconvertedtojson["wastingtime"];highscore = cookieconvertedtojson["highscore"]}
 
     function reset(){
       try{
