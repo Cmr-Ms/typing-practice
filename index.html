@@ -40,7 +40,6 @@
   </style>
 </head>
 <body>
-<!-- partial:index.partial.html -->
 <div id="mainframe">
   <a id="sentencearea"></a><br>
   <a id="nextsentence"></a><br>
@@ -556,7 +555,6 @@
   <input id="longwordmode" type="checkbox" onclick="allwords=wordsarea.value.split(RegExp(`\\n{${1+this.checked},}`)).filter(e=>Boolean(e))"><label>長文モード</label><br>
   <button onclick="reset()">リセット</button>
 </div>
-<!-- partial -->
   <script>
         const sentencearea = document.querySelector("#sentencearea");
     const nextsentence = document.querySelector("#nextsentence")
@@ -567,8 +565,12 @@
     const countdown = document.querySelector("#countdown")
     const timerseconds = document.querySelector("#seconds")
     escapecount = 0
-    wastingtime = 0
+    try{cookieconvertedtojson = JSON.parse(document.cookie);wastingtime = cookieconvertedtojson["wastingtime"];highscore = cookieconvertedtojson["highscore"]}catch(e){cookieconvertedtojson = {highscore: 0, wastingtime: 0}}
+
     function reset(){
+      try{
+        updatecookie()
+      }catch{}
       wordtotype = "";
       multilineword = []
       nextword = ""
@@ -589,7 +591,7 @@
     }
 
     function changeprogress(){
-      progress.innerText = `${typedchars} 文字, ${typedwords}行, バックスペース ${backspacecount} 回, エスケープ ${escapecount} 回, 浪費した時間 約 ${wastingtime} 秒`
+      progress.innerText = `${typedchars} 文字, ${typedwords}行, バックスペース ${backspacecount} 回, エスケープ ${escapecount} 回, 浪費した時間 約 ${Math.round(wastingtime)} 秒\n最高スコア ${highscore} 点`
     }
     function changeword(){
       changeprogress()
@@ -606,6 +608,15 @@
       nextsentence.innerHTML = "<b>次: </b>"+nextword
       typearea.value = "";
       typearea.style["background-color"] = "rgb(0, 0, 0)"
+    }
+    function updatecookie(){
+      highscore = highscore <= (typedchars - backspacecount) ? (typedchars - backspacecount) : highscore
+      document.cookie = JSON.stringify(
+        {
+          "wastingtime": wastingtime,
+          "highscore": highscore
+        }
+      )
     }
     window.onload = ()=>{
       //allwords=wordsarea.value.split("\n"+"\n".repeat(longwordmode.checked)).filter(e=>Boolean(e))
@@ -666,7 +677,7 @@
     typearea.addEventListener("keydown", (e)=>{
       if(e.key === "Escape"){
         escapecount++
-        wastingtime += endtime ? Math.round(seconds - ((endtime - Date.now()) / 1000)) : 0
+        wastingtime += endtime ? (seconds - ((endtime - Date.now()) / 1000)) : 0
         reset()
         try{
           clearTimeout(timer)
