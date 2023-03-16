@@ -566,6 +566,7 @@
     const longwordmode = document.querySelector("#longwordmode")
     const countdown = document.querySelector("#countdown")
     const timerseconds = document.querySelector("#seconds")
+    escapecount = 0
     function reset(){
       wordtotype = "";
       multilineword = []
@@ -587,7 +588,7 @@
     }
 
     function changeprogress(){
-      progress.innerText = `${typedchars} 文字, ${typedwords}行, バックスペース ${backspacecount} 回`
+      progress.innerText = `${typedchars} 文字, ${typedwords}行, バックスペース ${backspacecount} 回, エスケープ ${escapecount} 回`
     }
     function changeword(){
       changeprogress()
@@ -630,7 +631,8 @@
               }catch{}
             }
             clearInterval(countdowntimer)
-            alert(`${typedchars} 文字, ${typedwords} 行, バックスペース ${backspacecount} 回\nスコア: ${typedchars - backspacecount}`);console.log(`${typedchars} 文字, ${typedwords} 行, バックスペース ${backspacecount} 回\nスコア: ${typedchars - backspacecount}`);document.title = `${typedchars - backspacecount} 点 - 実用入力練習`
+            alert(`${typedchars} 文字, ${typedwords} 行, バックスペース ${backspacecount} 回, エスケープ ${escapecount} 回\nスコア: ${typedchars - backspacecount}`);console.log(`${typedchars} 文字, ${typedwords} 行, バックスペース ${backspacecount} 回, エスケープ ${escapecount} 回\nスコア: ${typedchars - backspacecount}`);document.title = `${typedchars - backspacecount} 点 - 実用入力練習`
+            escapecount = 0
             reset()
           }, endtime - starttime
         )
@@ -662,6 +664,7 @@
 
     typearea.addEventListener("keydown", (e)=>{
       if(e.key === "Escape"){
+        escapecount++
         reset()
         try{
           clearTimeout(timer)
