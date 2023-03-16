@@ -43,7 +43,7 @@
 <div id="mainframe">
   <a id="sentencearea"></a><br>
   <a id="nextsentence"></a><br>
-  <textarea id="typearea" rows=5 cols="50" autofocus placeholder="一番上の文を入力するとカウントダウンが始まります。エンターキーで改行するようにして、打ち間違いがない場合は次の問題文に切り替わります。なお、iOS, MacOSには対応しておりません(合っていても次の問題に切り替わらない)"></textarea><br>
+  <textarea id="typearea" rows=5 cols="50" autofocus placeholder="一番上の文を入力するとカウントダウンが始まります。エンターキーで改行するようにして、打ち間違いがない場合は次の問題文に切り替わります。"></textarea><br>
   <a id="progress"></a><br>
   <a id="countdown"></a><br>
   <textarea id="wordsarea" rows="5" cols=50 placeholder="ここに出題する文を改行区切りで入力">うまい果実ほど木の一番上にある
@@ -556,7 +556,7 @@
   <button onclick="reset()">リセット</button>
 </div>
   <script>
-        const sentencearea = document.querySelector("#sentencearea");
+    const sentencearea = document.querySelector("#sentencearea");
     const nextsentence = document.querySelector("#nextsentence")
     const typearea = document.querySelector("#typearea");
     const progress = document.querySelector("#progress");
@@ -656,8 +656,7 @@
         )
 
       }
-      if((e.inputType === "insertLineBreak" || (e.inputType === "insertText" && (!e.data || e.data ===  "\n"))) && typearea.value.replace(RegExp(`(?<=${wordtotype})(\n)`), "") === wordtotype){
-        typedchars += typearea.value.length
+      if((e.inputType === "insertLineBreak" || (e.inputType === "insertText" && (!e.data || e.data ===  "\n"))) && typearea.value.trim() === wordtotype){        typedchars += typearea.value.length
         typedwords++
         changeword()
       }if(wordtotype.startsWith(typearea.value) && typearea.value){
