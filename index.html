@@ -666,7 +666,7 @@
     typearea.addEventListener("keydown", (e)=>{
       if(e.key === "Escape"){
         escapecount++
-        wastingtime += Math.round(seconds - ((endtime - Date.now()) / 1000))
+        wastingtime += endtime ? Math.round(seconds - ((endtime - Date.now()) / 1000)) : 0
         reset()
         try{
           clearTimeout(timer)
