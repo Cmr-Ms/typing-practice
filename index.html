@@ -46,7 +46,7 @@
   <textarea id="typearea" rows=5 cols="50" autofocus placeholder="一番上の文を入力するとカウントダウンが始まります。エンターキーで改行するようにして、打ち間違いがない場合は次の問題文に切り替わります。"></textarea><br>
   <a id="progress"></a><br>
   <a id="countdown"></a><br>
-  <textarea id="wordsarea" rows="5" cols=50 placeholder="ここに出題する文を改行区切りで入力">うまい果実ほど木の一番上にある
+  <textarea id="wordsarea" rows="5" cols=50 placeholder="改行区切りでワードを入力  長文モードを使う場合は改行2つ区切りで入力してください">うまい果実ほど木の一番上にある
 走らなければ競争に勝てない
 もっと自信持っていけよ
 元気が出ない日は、元気のいらない日
@@ -553,8 +553,10 @@
   <input id="seconds" type="number" value="60" onchange="seconds=Number(this.value);reset()">
   <label>秒</label>
   <input id="longwordmode" type="checkbox" onclick="allwords=wordsarea.value.split(RegExp(`\\n{${1+this.checked},}`)).filter(e=>Boolean(e))"><label>長文モード</label><br>
-  <button onclick="reset()">リセット</button>
+  <button onclick="reset()">リセット</button><br>
+  <a href="https://github.com/Cmr-Ms/typing-practice/tree/main">ワードのダウンロードはこちらから</a>
 </div>
+
   <script>
     const sentencearea = document.querySelector("#sentencearea");
     const nextsentence = document.querySelector("#nextsentence")
