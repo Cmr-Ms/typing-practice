@@ -556,7 +556,7 @@
   <label>秒</label>
   <input id="longwordmode" type="checkbox" onclick="allwords=wordsarea.value.split(RegExp(`\\n{${1+this.checked},}`)).filter(e=>Boolean(e))"><label>長文モード</label><br>
   <button onclick="reset()">リセット</button><br>
-  <a href="https://github.com/Cmr-Ms/typing-practice/tree/all-words" target="_blank">ワードのダウンロードはこちらから</a><br>
+  <a href="https://github.com/Cmr-Ms/typing-practice/tree/main" target="_blank">ワードのダウンロードはこちらから</a><br>
   <a href="https://forms.gle/5AfvtdjJMF1s87c49" target="_blank">ご意見などはこちらから</a>
 </div>
 
@@ -570,33 +570,31 @@
     const countdown = document.querySelector("#countdown")
     const timerseconds = document.querySelector("#seconds")
     escapecount = 0
-    try{cookieconvertedtojson = JSON.parse(document.cookie);wastingtime = cookieconvertedtojson["wastingtime"];highscore = cookieconvertedtojson["highscore"]}catch(e){cookieconvertedtojson = {highscore: 0, wastingtime: 0};wastingtime = cookieconvertedtojson["wastingtime"];highscore = cookieconvertedtojson["highscore"]}
-
+    typedchars = 0
+    typedwords = 0
+    backspacecount = 0
+    wastingtime = Number(localStorage.getItem("wastingtime") ? localStorage.getItem("wastingtime") : 0)
     function reset(){
-      try{
-        updatecookie()
-      }catch{}
       wordtotype = "";
       multilineword = []
       nextword = ""
       typearea.value=""
-      typedchars = 0;
-      typedwords = 0;
       started = false
       starttime = 0
       wordstarttime = 0
       wordtypingstarted = false
       endtime = 0
-      backspacecount = 0
+      
       seconds = Number(timerseconds.value)
       countdown.innerText = `残り ${seconds} 秒`
+      changeprogress()
       changeword()
       clearTimeout(timer)
       clearInterval(countdowntimer)
     }
 
     function changeprogress(){
-      progress.innerText = `${typedchars} 文字, ${typedwords}行, バックスペース ${backspacecount} 回, エスケープ ${escapecount} 回, 浪費した時間 約 ${Math.round(wastingtime)} 秒\n最高スコア ${highscore} 点`
+      progress.innerText = `${typedchars} 文字, ${typedwords}行, バックスペース ${backspacecount} 回, エスケープ ${escapecount} 回, 浪費した時間 約 ${Math.round(wastingtime)} 秒\n最高スコア ${localStorage.getItem(`highscore${seconds}`) ? localStorage.getItem(`highscore${seconds}`) : 0} 点`
     }
     function changeword(){
       changeprogress()
@@ -614,28 +612,21 @@
       typearea.value = "";
       typearea.style["background-color"] = "rgb(0, 0, 0)"
     }
-    function updatecookie(){
-      highscore = highscore <= (typedchars - backspacecount) ? (typedchars - backspacecount) : highscore
-      document.cookie = JSON.stringify(
-        {
-          "wastingtime": wastingtime,
-          "highscore": highscore
-        }
-      )
+    function updatestorage(){
+      
+      localStorage.setItem(`highscore${seconds}`, (Number(localStorage.getItem(`highscore${seconds}`)) <= (typedchars - backspacecount) ? (typedchars - backspacecount) : 0))
+      localStorage.setItem("wastingtime", wastingtime)
     }
     window.onload = ()=>{
-      //allwords=wordsarea.value.split("\n"+"\n".repeat(longwordmode.checked)).filter(e=>Boolean(e))
       allwords=wordsarea.value.split(RegExp(`\\n{${1+longwordmode.checked},}`)).filter(e=>Boolean(e))
       reset()
     }
     wordsarea.addEventListener("input", (e)=>{
-      //allwords=wordsarea.value.split("\n"+"\n".repeat(longwordmode.checked)).filter(e=>Boolean(e))
       allwords=wordsarea.value.split(RegExp(`\\n{${1+longwordmode.checked},}`)).filter(e=>Boolean(e))
       reset();
     })
 
     typearea.addEventListener("input", (e)=>{
-      //console.log(e.inputType, e.data)
       if(!started && typearea.value){
         started = true
         starttime = Date.now()
@@ -650,6 +641,7 @@
             clearInterval(countdowntimer)
             alert(`${typedchars} 文字, ${typedwords} 行, バックスペース ${backspacecount} 回, エスケープ ${escapecount} 回\nスコア: ${typedchars - backspacecount}`);console.log(`${typedchars} 文字, ${typedwords} 行, バックスペース ${backspacecount} 回, エスケープ ${escapecount} 回\nスコア: ${typedchars - backspacecount}`);document.title = `${typedchars - backspacecount} 点 - 実用入力練習`
             escapecount = 0
+            updatestorage()
             reset()
           }, endtime - starttime
         )
@@ -681,7 +673,9 @@
     typearea.addEventListener("keydown", (e)=>{
       if(e.key === "Escape"){
         escapecount++
+        
         wastingtime += endtime ? (seconds - ((endtime - Date.now()) / 1000)) : 0
+
         reset()
         try{
           clearTimeout(timer)
