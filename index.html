@@ -584,7 +584,10 @@
       wordstarttime = 0
       wordtypingstarted = false
       endtime = 0
-      
+      escapecount = 0
+      typedchars = 0
+      typedwords = 0
+      backspacecount = 0
       seconds = Number(timerseconds.value)
       countdown.innerText = `残り ${seconds} 秒`
       changeprogress()
