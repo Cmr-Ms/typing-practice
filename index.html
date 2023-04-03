@@ -96,12 +96,12 @@
       typedchars = 0
       typedlines = 0
       typedwords = 0
-      timer = 0
       seconds = Number(timerseconds.value)
       countdown.innerText = `残り ${seconds} 秒`
       changeprogress()
       changeword()
       clearTimeout(timer)
+      timer = 0
       try{clearInterval(countdowntimer)}catch{}
     }
 
