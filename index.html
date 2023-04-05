@@ -156,13 +156,13 @@
             updatestorage()
             reset()
           }, endtime - starttime
-        )}
-
+        )
         countdowntimer = setInterval(
           ()=>{
             if(timer){countdown.innerText = `残り ${Math.floor((endtime - Date.now()) / 1000)} 秒`}
           }, 100
         )
+      }
 
       }
       if((e.inputType === "insertLineBreak" || (e.inputType === "insertText" && (!e.data || e.data ===  "\n")))){
