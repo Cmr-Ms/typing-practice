@@ -89,11 +89,7 @@
     function makeallwords(){
       allwords = wordsarea.value.split("\n".repeat(1+longwordmode.checked)).filter(e=>Boolean(e))
     }
-    typedchars = 0
-    typedlines = 0
-    timer = 0
-    until_words = Number(document.querySelector("#until_words").value)
-    wastingtime = Number(localStorage.getItem("wastingtime") ? localStorage.getItem("wastingtime") : 0)
+
     function reset(){
       wordtotype = "";
       multilineword = []
@@ -139,8 +135,13 @@
     wordsarea.addEventListener("input", (e)=>{
       makeallwords()
     })
-
+    typedchars = 0
+    typedlines = 0
+    timer = 0
+    until_words = Number(document.querySelector("#until_words").value)
+    wastingtime = Number(localStorage.getItem("wastingtime") ? localStorage.getItem("wastingtime") : 0)
     window.onload = ()=>{
+      makeallwords()
       reset()
     }
 
