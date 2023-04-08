@@ -129,7 +129,7 @@
     }
     function updatestorage(){
       
-      localStorage.setItem(`highscore${seconds}`, (typedchars) >= Number(localStorage.getItem(`highscore${seconds}`)) ? (typedchars) : 0)
+      localStorage.setItem(`highscore${seconds}`, (typedchars) >= Number(localStorage.getItem(`highscore${seconds}`)) ? (typedchars) : Number(localStorage.getItem(`highscore${seconds}`)))
       localStorage.setItem("wastingtime", wastingtime)
     }
     wordsarea.addEventListener("input", (e)=>{
