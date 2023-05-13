@@ -507,13 +507,16 @@
     function changeword(){
       changeprogress()
       if(!lockword.checked && multilineword){
+        
         if(!multilineword[1]){
-
+          if(multilineword[0]){islastofword = true}
           multilineword.push(...allwords[Math.floor(allwords.length * Math.random())].split("\n"))
+          
         }
         wordtotype = multilineword[0]
         nextword = multilineword[1]
         multilineword = multilineword.slice(1)
+        
         sentencearea.innerText = wordtotype
         nextsentence.innerHTML = "<b>次: </b>"+nextword
       }
@@ -531,6 +534,7 @@
     typedchars = 0
     typedlines = 0
     timer = 0
+    islastofword = false
     until_words = Number(document.querySelector("#until_words").value)
     wastingtime = Number(localStorage.getItem("wastingtime") ? localStorage.getItem("wastingtime") : 0)
     window.onload = ()=>{
@@ -566,7 +570,7 @@
         if(typearea.value.replace("\n", "") === wordtotype){
           typedchars += typearea.value.length
           typedlines++
-          if(!multilineword[1]){typedwords++}
+          if(islastofword){typedwords++;islastofword = false}
           if(!timer && wordsmode.checked && typedwords === until_words){
             endtime = Date.now()
             alert(`${(endtime - starttime) / 1000}秒\n${typedchars / ((endtime - starttime) / 1000)}文字/秒\n${typedchars / ((endtime - starttime) / 1000)*60}文字/分`);console.log(`${(endtime - starttime) / 1000}秒\n${typedchars / ((Date.now() - starttime) / 1000)}/秒, ${until_words}`);document.title = `${typedchars / ((endtime - starttime) / 1000)}文字/秒 - 実用入力練習`
