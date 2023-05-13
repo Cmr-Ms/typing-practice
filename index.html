@@ -506,13 +506,12 @@
     }
     function changeword(){
       changeprogress()
-      console.log(lockword.checked)
       if(!lockword.checked && multilineword){
-        multilineword.push(...allwords[Math.floor(allwords.length * Math.random())].split("\n"))
-        wordtotype = multilineword[0]
         if(!multilineword[1]){
+
           multilineword.push(...allwords[Math.floor(allwords.length * Math.random())].split("\n"))
         }
+        wordtotype = multilineword[0]
         nextword = multilineword[1]
         multilineword = multilineword.slice(1)
         sentencearea.innerText = wordtotype
