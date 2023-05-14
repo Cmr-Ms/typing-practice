@@ -66,6 +66,7 @@
   <label>ワード数モード</label>
   <input id="lockword" type="checkbox">
   <label>ワード固定</label><br>
+
   <input id="until_words" type="number" value="10" onchange="until_words=Number(this.value);makeallwords();reset()">
   <label>ワード</label><br>
   <button onclick="reset()">リセット</button><br>
@@ -647,7 +648,7 @@
     }
 
     function reset(){
-      if(!lockword.checked){
+      if(!lockword.checked && longwordmode.checked){
         wordtotype = "";
         multilineword = []
         nextword = ""
@@ -659,6 +660,7 @@
       typedchars = 0
       typedlines = 0
       typedwords = 0
+      line = 0
       seconds = Number(timerseconds.value)
       countdown.innerText = `残り ${seconds} 秒`
       changeprogress()
@@ -673,20 +675,42 @@
     }
     function changeword(){
       changeprogress()
-      if(!lockword.checked && multilineword){
-        
+
+      if(!multilineword[0]){
+        multilineword = allwords[Math.floor(allwords.length * Math.random())].split("\n")
         if(!multilineword[1]){
-          if(multilineword[0]){islastofword = true}
           multilineword.push(...allwords[Math.floor(allwords.length * Math.random())].split("\n"))
-          
         }
-        wordtotype = multilineword[0]
-        nextword = multilineword[1]
-        multilineword = multilineword.slice(1)
-        
-        sentencearea.innerText = wordtotype
-        nextsentence.innerHTML = "<b>次: </b>"+nextword
       }
+
+      if(longwordmode.checked){
+
+        
+        wordtotype = multilineword[line]
+        
+        if(multilineword[line+1]){
+          nextword = multilineword[++line]
+            
+        }else{
+          if(!lockword.checked){
+            multilineword = allwords[Math.floor(allwords.length * Math.random())].split("\n")
+          }
+          islastofword = true
+          line = 0
+          nextword = multilineword[line]
+        }
+
+      }else{
+        
+        if(!lockword.checked){
+          wordtotype = nextword
+          multilineword = [allwords[Math.floor(allwords.length * Math.random())]]
+          nextword = multilineword[line]
+          islastofword = true
+        }
+      }
+      sentencearea.innerText = wordtotype
+      nextsentence.innerHTML = "<b>次: </b>"+nextword
       typearea.value = "";
       typearea.style["background-color"] = "rgb(0, 0, 0)"
     }
@@ -735,7 +759,7 @@
       }
       if((e.inputType === "insertLineBreak" || (e.inputType === "insertText" && (!e.data || e.data ===  "\n")))){
         if(typearea.value.replace("\n", "") === wordtotype){
-          typedchars += typearea.value.length
+          typedchars += typearea.value.length - !longwordmode.checked
           typedlines++
           if(islastofword){typedwords++;islastofword = false}
           if(!timer && wordsmode.checked && typedwords === until_words){
